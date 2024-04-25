@@ -1,3 +1,4 @@
+# TODO is a list now, basically (no more sub images)
 sub_images = {
         "ocrd": "core",
         "ocrd-olena-binarize": "ocrd_olena",

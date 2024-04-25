@@ -5,6 +5,8 @@ test_id=`basename $0`
 cd `mktemp -d /tmp/$test_id-XXXXX`
 
 # Prepare processors
+ocrd resmgr download ocrd-tesserocr-recognize eng.traineddata
+ocrd resmgr download ocrd-tesserocr-recognize osd.traineddata
 ocrd resmgr download ocrd-tesserocr-recognize Fraktur_GT4HistOCR.traineddata
 
 # Prepare test workspace

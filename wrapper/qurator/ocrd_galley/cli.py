@@ -5,10 +5,8 @@ import colorama
 from pathlib import Path
 from termcolor import colored
 
-from .sub_images import sub_images
 
-DOCKER_IMAGE_PREFIX = os.environ.get("DOCKER_IMAGE_PREFIX", "quratorspk/ocrd-galley")
-DOCKER_IMAGE_TAG = os.environ.get("DOCKER_IMAGE_TAG", "latest")
+DOCKER_IMAGE_TAG = os.environ.get("DOCKER_IMAGE_TAG", "maximum")  # TODO rename
 LOG_LEVEL = os.environ.get("LOG_LEVEL", "INFO")
 
 # xdg-user-dirs is only available under Python 3.10+ etc. pp. → it is simpler
@@ -26,22 +24,9 @@ def main():
     argv = sys.argv.copy()
     argv[0] = os.path.basename(argv[0])
 
-    # If we're running ocrd resmgr download we need to run the correct subimage.
-    if argv[:3] == ["ocrd", "resmgr", "download"] or \
-       argv[:3] == ["ocrd", "resmgr", "list-available"]:
-        # Default to the base image
-        sub_image = sub_images[argv[0]]
-        # But look for a match of the executable
-        for x in argv[3:]:
-            if x in sub_images:
-                sub_image = sub_images[x]
-                break
-    else:
-        sub_image = sub_images[argv[0]]
+    docker_image = "ocrd/all:%s" % (DOCKER_IMAGE_TAG, )
 
-    docker_image = "%s-%s:%s" % (DOCKER_IMAGE_PREFIX, sub_image, DOCKER_IMAGE_TAG)
-
-    if DOCKER_IMAGE_TAG != "latest":
+    if DOCKER_IMAGE_TAG != "maximum":
         print(colored(f"Using {docker_image}", 'red'))
     docker_run(argv, docker_image)
 
@@ -50,6 +35,7 @@ def docker_run(argv, docker_image):
     docker_run_options = []
     docker_run_options.extend(["--rm", "-t"])
     docker_run_options.extend(["--mount", "type=bind,src=%s,target=/data" % os.getcwd()])
+    docker_run_options.extend(["--mount", "type=tmpfs,target=/tmp"])
     docker_run_options.extend(["--user", "%s:%s" % (os.getuid(), os.getgid())])
     docker_run_options.extend(["-e", "LOG_LEVEL=%s" % LOG_LEVEL])
     docker_run_options.extend(["-e", "_OCRD_COMPLETE"])
