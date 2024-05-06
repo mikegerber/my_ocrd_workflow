@@ -39,4 +39,6 @@ sub_images = {
 
         # non OCR-D CLI
         "ocr-transform": "ocrd_fileformat",
+        "dinglehopper": "XXX now ocrd_all",
+        "dinglehopper-extract": "XXX now ocrd_all",
 }
