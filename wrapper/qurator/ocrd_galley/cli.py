@@ -5,8 +5,9 @@ import colorama
 from pathlib import Path
 from termcolor import colored
 
+from .processor_images import processor_images
 
-DOCKER_IMAGE_TAG = os.environ.get("DOCKER_IMAGE_TAG", "maximum")  # TODO rename
+
 LOG_LEVEL = os.environ.get("LOG_LEVEL", "INFO")
 
 # xdg-user-dirs is only available under Python 3.10+ etc. pp. → it is simpler
@@ -24,9 +25,23 @@ def main():
     argv = sys.argv.copy()
     argv[0] = os.path.basename(argv[0])
 
-    docker_image = "ocrd/all:%s" % (DOCKER_IMAGE_TAG, )
 
-    if DOCKER_IMAGE_TAG != "maximum":
+    # If we're running ocrd resmgr download we need to run the correct subimage.
+    if argv[:3] == ["ocrd", "resmgr", "download"] or \
+       argv[:3] == ["ocrd", "resmgr", "list-available"]:
+        # Default to the base image
+        processor_image = processor_images[argv[0]]
+        # But look for a match of the executable
+        for x in argv[3:]:
+            if x in processor_images:
+                processor_image = processor_images[x]
+                break
+    else:
+        processor_image = processor_images[argv[0]]
+
+    docker_image = processor_image
+
+    if docker_image != "ocrd/all:maximum":
         print(colored(f"Using {docker_image}", 'red'))
     docker_run(argv, docker_image)
 

@@ -12,4 +12,6 @@ unzip actevedef_718448162.first-page+binarization+segmentation.zip
 cd actevedef_718448162.first-page+binarization+segmentation
 
 # Run tests
-ocrd-trocr-recognize      -I OCR-D-SEG-LINE-SBB -O TEST-TROCR
+ocrd-trocr-recognize -I OCR-D-SEG-LINE-SBB -O TEST-TROCR
+
+# TODO Does not use a useful model, does not check that text was recognize
