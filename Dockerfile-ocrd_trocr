@@ -1,8 +1,7 @@
-ARG GIT_COMMIT="latest"
-FROM quratorspk/ocrd-galley-core:$GIT_COMMIT
+FROM ocrd/all:maximum
 
-ARG PIP_INSTALL="pip install --no-cache-dir"
-ARG OCRD_TROCR_COMMIT="250ff1c"
+ARG PIP_INSTALL="pip3 install --no-cache-dir"
+ARG OCRD_TROCR_COMMIT="30696cb"
 
 
 # Build pip installable stuff
